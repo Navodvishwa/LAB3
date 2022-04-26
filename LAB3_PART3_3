@@ -1,0 +1,59 @@
+#if CONFIG_FREERTOS_UNICORE
+static const BaseType_t app_cpu = 0;
+#else
+static const BaseType_t app_cpu = 1;
+#endif
+
+static const int LED_1 = 4;
+static const int LED_2 = 5;
+
+void Toggle_LED_500ms(void *parameter){
+  while(1){
+    digitalWrite(LED_1,HIGH);
+    digitalWrite(LED_2,HIGH);
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+    digitalWrite(LED_1,LOW);
+    digitalWrite(LED_2,LOW);
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+    }
+}
+
+void Toggle_LED_300ms(void *parameter){
+  while(1){
+    digitalWrite(LED_1,HIGH);
+    digitalWrite(LED_2,HIGH);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    digitalWrite(LED_1,LOW);
+    digitalWrite(LED_2,LOW);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    }
+  }
+
+void setup() {
+  pinMode(LED_1,OUTPUT);
+  pinMode(LED_2,OUTPUT);
+
+  xTaskCreatePinnedToCore(//Tell the scheduler to run the task in one core
+                          Toggle_LED_500ms,
+                          "Toggle LED_500ms",
+                          1024,//size of stack
+                          NULL,//Parameter to pass to the function
+                          1,//Task Priority
+                          NULL,//Task Handle or Pointer to check status memory usage and end if necessary
+                          0);//run on CPU Core 0
+
+  xTaskCreatePinnedToCore(//Tell the scheduler to run the task in one the core
+                          Toggle_LED_300ms,
+                          "Toggle LED_300ms",
+                          1024,//size of stack
+                          NULL,//Parameter to pass to the function
+                          1,//Task priority
+                          NULL,//Task Handle or Pointer to check status memory
+                          0);                          
+
+}
+
+void loop() {
+ 
+
+}
