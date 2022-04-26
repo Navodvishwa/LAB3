@@ -1,0 +1,35 @@
+#if CONFIG_FREERTOS_UNICORE
+static const BaseType_t app_cpu = 0;
+#else
+static const BaseType_t app_cpu = 1;
+#endif
+
+static const int Blink_LED = 2;
+
+void Toggle_LED_500ms(void *parameter){
+  while(1){
+   digitalWrite(Blink_LED,HIGH);
+   vTaskDelay(500 / portTICK_PERIOD_MS);
+   digitalWrite(Blink_LED,LOW);
+   vTaskDelay(500 / portTICK_PERIOD_MS);
+    }
+  }
+
+void setup() {
+  pinMode(Blink_LED,OUTPUT);
+
+  xTaskCreatePinnedToCore(//scheduler to run the task in one the core
+            Toggle_LED_500ms,
+            "Toggle LED_500ms",
+            1024,//Size of stack
+            NULL,//Parameter to pass to the function
+            1,//Task Priority
+            NULL,//Task Handle or Pointer to check status memory usage and end if necessary
+            0);//run on CPU Core 0
+
+}
+
+void loop() {
+  
+
+}
