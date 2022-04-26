@@ -1,0 +1,61 @@
+#if CONFIG_FREERTOS_UNICORE
+static const BaseType_t app_cpu = 0;
+#else
+static const BaseType_t app_cpu = 1;
+#endif
+
+static const int Internal_LED = 2;
+int Toggle_delay = 0;
+
+void Get_Input_DelayTime(void *parameter){
+  int delay_time;
+  while(1){
+    if(Serial.available() > 0){
+      delay_time = Serial.parseInt();
+      if(delay_time != 0){
+        Toggle_delay = delay_time;
+        }
+        Serial.println(Toggle_delay);
+      }
+    }
+  }
+
+void Blink_LED(void *parameter){
+  while(1){
+  digitalWrite(Internal_LED,HIGH);
+  vTaskDelay(Toggle_delay / portTICK_PERIOD_MS);
+  digitalWrite(Internal_LED,LOW);
+  vTaskDelay(Toggle_delay / portTICK_PERIOD_MS);
+  }
+}
+
+void setup() {
+  Serial.begin(115200);
+  Serial.println("Enter Time PERIOD for Delay:");
+  
+  pinMode(Internal_LED,OUTPUT);
+  vTaskDelay(1000 / portTICK_PERIOD_MS);
+
+  xTaskCreatePinnedToCore(//Tell the scheduler to run the task in one the core
+                          Get_Input_DelayTime,
+                          "Get serial input",
+                          1024,//size of stack
+                          NULL,//Parameter to pass to the function
+                          1,//Task Priorty
+                          NULL,//Task Handle or Pointer to check status memory usage and end if necessary
+                          0);//run on cpu core 0;
+
+  xTaskCreatePinnedToCore(//Tell the scheduler to run the task in one the core
+                          Blink_LED,
+                          "Blink LED",
+                          1024,//size of stack
+                          NULL,//parameter to pass to the function
+                          1,//Task priorty
+                          NULL,//Task Handle or Pointer to check status memory usage and end if necessary
+                          1);//run on cpu core 1
+}
+
+void loop() {
+  
+
+}
