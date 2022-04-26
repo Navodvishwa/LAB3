@@ -15,7 +15,6 @@ void Get_Input_DelayTime(void *parameter){
       if(delay_time != 0){
         Toggle_delay = delay_time;
         }
-        Serial.println(Toggle_delay);
       }
     }
   }
