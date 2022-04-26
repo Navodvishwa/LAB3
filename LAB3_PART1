@@ -1,0 +1,15 @@
+static const int Blink_LED = 2;
+static const int Delay_Time = 500;
+
+void setup() {
+  pinMode(Blink_LED,OUTPUT);
+
+}
+
+void loop() {
+  digitalWrite(Blink_LED,HIGH);
+  delay(Delay_Time);
+  digitalWrite(Blink_LED,LOW);
+  delay(Delay_Time);
+  
+}
