@@ -43,7 +43,7 @@ void setup() {
                           NULL,//Parameter to pass to the function
                           1,//Task Priorty
                           NULL,//Task Handle or Pointer to check status memory usage and end if necessary
-                          0);//run on cpu core 0;
+                          app_cpu);//run on cpu core 0;
 
   xTaskCreatePinnedToCore(//Tell the scheduler to run the task in one the core
                           Blink_LED,
@@ -52,7 +52,7 @@ void setup() {
                           NULL,//parameter to pass to the function
                           1,//Task priorty
                           NULL,//Task Handle or Pointer to check status memory usage and end if necessary
-                          1);//run on cpu core 1
+                          app_cpu);//run on cpu core 1
 }
 
 void loop() {
