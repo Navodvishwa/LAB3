@@ -1,0 +1,67 @@
+#if CONFIG_FREERTOS_UNICORE
+static const BaseType_t app_cpu = 0;
+#else
+static const BaseType_t app_cpu = 1;
+#endif
+
+//Globals
+static int shared_var = 0;
+static SemaphoreHandle_t Mutex;
+
+//Increment shared variable(the wrong way)
+void incTask(void *parameter){
+  int local_var;
+
+  //loop forever
+  while(1){
+    if(xSemaphoreTake(Mutex, 0) == pdTRUE){
+      local_var = shared_var;
+      local_var++;
+      vTaskDelay(random(100, 500) / portTICK_PERIOD_MS);
+      shared_var = local_var;
+      Serial.println(shared_var);
+      }
+    }
+  }
+
+void setup() {
+  //Hack to kinda get randomness
+  randomSeed(analogRead(0));
+
+  //configure Serial
+  Serial.begin(115200);
+
+  //wait a moment to start(so we don't miss Serial output)
+  vTaskDelay(1000 / portTICK_PERIOD_MS);
+  Serial.println();
+  Serial.println("---FreeRTOS Race Condition Demo---");
+
+  Mutex = xSemaphoreCreateMutex();
+  
+  //Start task 1
+  xTaskCreatePinnedToCore(incTask,
+                          "Increment Task 1",
+                          1024,
+                          NULL,
+                          1,
+                          NULL,
+                          app_cpu);
+
+  //Start task 2
+  xTaskCreatePinnedToCore(incTask,
+                          "Increment Task 2",
+                          1024,
+                          NULL,
+                          1,
+                          NULL,
+                          app_cpu);
+
+  //Delete "steup and loop" task
+  vTaskDelete(NULL);
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+}
