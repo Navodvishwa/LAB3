@@ -14,6 +14,7 @@ void Task_B(void *parameter){
     Serial.println();
     Serial.print("I am Task B I am Running on CORE_");
     Serial.print(core);
+    Serial.println();
     vTaskDelay(3000 / portTICK_PERIOD_MS);
     }
   }
