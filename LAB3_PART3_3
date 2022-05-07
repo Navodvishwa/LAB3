@@ -4,8 +4,8 @@ static const BaseType_t app_cpu = 0;
 static const BaseType_t app_cpu = 1;
 #endif
 
-static const int LED_1 = 4;
-static const int LED_2 = 5;
+static const int LED_1 = 18;
+static const int LED_2 = 19;
 
 void Toggle_LED_500ms(void *parameter){
   while(1){
