@@ -9,15 +9,24 @@ int Toggle_delay = 0;
 
 void Get_Input_DelayTime(void *parameter){
   int delay_time;
+  Serial.print("Enter Time PERIOD for Delay: ");
+  
   while(1){
     if(Serial.available() > 0){
       delay_time = Serial.parseInt();
       if(delay_time != 0){
-        Toggle_delay = delay_time;
+        Toggle_delay = delay_time; 
+               
+        Serial.println(Toggle_delay);
+        Serial.print("Running delay : ");
+        Serial.println(Toggle_delay);
+        Serial.println(" ");
+        Serial.print("Enter another Time PERIOD for Delay: ");
         }
       }
     }
   }
+  
 
 void Blink_LED(void *parameter){
   while(1){
@@ -30,7 +39,6 @@ void Blink_LED(void *parameter){
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("Enter Time PERIOD for Delay:");
   
   pinMode(Internal_LED,OUTPUT);
   vTaskDelay(1000 / portTICK_PERIOD_MS);
@@ -42,7 +50,7 @@ void setup() {
                           NULL,//Parameter to pass to the function
                           1,//Task Priorty
                           NULL,//Task Handle or Pointer to check status memory usage and end if necessary
-                          app_cpu);//run on cpu core
+                          app_cpu);//run on cpu core 0;
 
   xTaskCreatePinnedToCore(//Tell the scheduler to run the task in one the core
                           Blink_LED,
@@ -51,7 +59,7 @@ void setup() {
                           NULL,//parameter to pass to the function
                           1,//Task priorty
                           NULL,//Task Handle or Pointer to check status memory usage and end if necessary
-                          app_cpu);//run on cpu core 
+                          app_cpu);//run on cpu core 1
 }
 
 void loop() {
